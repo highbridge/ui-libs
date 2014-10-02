@@ -1,0 +1,24 @@
+/* Required CSS for hbSlider.js */
+.touch-slider { 
+    overflow: hidden;
+    position: relative;
+}
+
+.touch-pane { 
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    opacity: 0;
+    width: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.touch-pane.current { 
+    opacity: 1;
+    z-index: 1;
+}
+
+.init-transition { transition: transform 0.01s; opacity: 0 }
+.init-transition.current { opacity: 1 }
+.active-transition { transition: transform 0.5s; opacity: 1 }
