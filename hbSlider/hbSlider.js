@@ -10,8 +10,8 @@
         var slider = this;
         
         // Ensure a pane is set as current on load
-        if($(this).find('.touch-pane.current').length == 0)
-            $(this).find('.touch-pane').eq(0).addClass('current');
+        if($(this).find('.slide-pane.current').length == 0)
+            $(this).find('.slide-pane').eq(0).addClass('current');
 
         // When resize is triggered
         $(window).on('resize', function()
@@ -20,7 +20,7 @@
             $(slider).removeAttr('style');
             
             // Loop through all panes and set the container height to their size
-            $(slider).find('.touch-pane').each(function()
+            $(slider).find('.slide-pane').each(function()
             {
                 $(this).css('height', 'auto');
                 var parent = $(slider);
@@ -40,12 +40,12 @@
         // Convenience event for going to the next pane
         $(this).on('slide-next', function()
         {
-            var current = $(this).find('.touch-pane.current');
+            var current = $(this).find('.slide-pane.current');
             var index = current.index();
 
             var next = index + 1;
 
-            if(next >= $(this).find('.touch-pane').length)
+            if(next >= $(this).find('.slide-pane').length)
                 next = 0;
 
             $(this).trigger('slide-to', next);
@@ -54,7 +54,7 @@
         // Convenience event for going to the previous pane
         $(this).on('slide-prev', function()
         {
-            var current = $(this).find('.touch-pane.current');
+            var current = $(this).find('.slide-pane.current');
             var index = current.index();
 
             var prev = index - 1;
@@ -73,10 +73,10 @@
             if(request == parseInt(request))   slide.index = request;
             
             // Find index
-            var to = $(this).find('.touch-pane').eq(slide.index);
+            var to = $(this).find('.slide-pane').eq(slide.index);
 
             // Find current element
-            var from = $(this).find('.touch-pane.current');
+            var from = $(this).find('.slide-pane.current');
 
             // Make sure we're actually going somewhere
             // Also make sure we're not already animating
