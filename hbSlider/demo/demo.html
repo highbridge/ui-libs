@@ -1,0 +1,84 @@
+<html>
+    <head>
+        <title>HighBridge Slider Demo</title>
+        <link href="../hbSlider.css" rel="stylesheet" type="text/css">
+
+        <script src="vendor/jquery-1.11.1.min.js"></script>
+        <script src="vendor/prefixfree.min.js"></script>
+        <script src="../hbSlider.js"></script>
+        
+        <script>
+            $(document).ready(function()
+            {
+                $('.hb-slider').hbSlider({slideEnd: function(target)
+                {
+                    $('.slider-buttons input').prop('disabled', false);
+                }});
+
+                // Simple click
+                $('.image-buttons input').on('click', function()
+                {
+                    $(this).parents('.hb-slider').trigger('slide-'+this.dataset.value);
+                    $('.image-buttons input').prop('disabled', true);
+                });
+
+                // AJAX agnostic click
+                $('body').on('click', '.text-buttons input', function()
+                {
+                    $('.text-slider.hb-slider').trigger('slide-'+this.dataset.value);
+                    $('.text-buttons input').prop('disabled', true);                    
+                });
+            });
+        </script>
+        
+        <style>
+            .image-slider { width: 290px; }
+            .text-slider { width: 400px; }
+            .hb-slider { border: 1px solid #000; margin: 1em; }
+
+            .slider-buttons { position: absolute; z-index: 1; }
+        </style>
+    </head>
+    
+    <body>
+        <p>Hello world!</p>
+
+        <div class='image-slider hb-slider'>
+            <img class='slide-pane' src='img/kristyfish.png'>
+            <img class='slide-pane' src='img/spacefish.png'>
+            <img class='slide-pane' src='img/dat-fish.png'>
+            <img class='slide-pane' src='img/gun-fish.png'>
+            <img class='slide-pane' src='img/dead-fish.png'>
+
+            <!-- The buttons can be wherever you want! -->
+            <div class='slider-buttons image-buttons'>
+                <input type="button" data-value="next" value="Next">
+                <input type="button" data-value="prev" value="Previous">
+            </div>
+        </div>
+        
+        <div class='text-slider hb-slider'>
+            <div class='slide-pane'>
+                This is a text slider! <a href="http://google.com/">With an example link</a>
+            </div>
+
+            <div class='slide-pane'>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur nec mi convallis, rutrum quam et, aliquam arcu. Duis laoreet tellus eget posuere luctus. Maecenas id metus sit amet nunc laoreet convallis. Aenean at velit mi. Morbi rhoncus libero a odio egestas blandit. Donec laoreet euismod ante, non volutpat eros dignissim quis. Morbi sem libero, interdum et congue eget, pharetra non massa. Donec adipiscing urna risus. Integer luctus fermentum tellus sit amet bibendum. Vestibulum fringilla purus purus, at scelerisque est mattis et.
+            </div>
+
+            <div class='slide-pane'>
+                Aliquam erat volutpat. Mauris justo ante, aliquet nec tincidunt et, fringilla vitae libero. Donec fermentum, mauris vel mattis sollicitudin, lectus lacus scelerisque purus, at faucibus justo ligula non magna. Duis eu urna viverra, dignissim velit in, laoreet arcu. Aenean ligula sem, vehicula et leo ac, cursus suscipit tellus.            
+            </div>
+
+            <div class='slide-pane'>
+                Vestibulum dignissim eget metus non gravida. Nunc accumsan lorem vel nisl molestie accumsan. Praesent vitae elementum ligula, in feugiat eros. Vivamus vel porttitor justo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pulvinar hendrerit tellus, vitae vestibulum est accumsan ut. Mauris bibendum pellentesque erat. Nullam nunc libero, mollis sit amet justo ut, malesuada volutpat odio. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+            </div>
+        </div>
+
+        <!-- Inside, outside, it makes no difference! -->
+        <div class='slider-buttons text-buttons'>
+            <input type="button" data-value="next" value="Next">
+            <input type="button" data-value="prev" value="Previous">
+        </div>
+    </body>
+</html>
