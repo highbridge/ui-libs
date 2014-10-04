@@ -1,18 +1,27 @@
 <html>
     <head>
+        <meta charset="UTF-8">
         <title>HighBridge Slider Demo</title>
         <link href="../hbSlider.css" rel="stylesheet" type="text/css">
 
-        <script src="vendor/jquery-1.11.1.min.js"></script>
-        <script src="vendor/prefixfree.min.js"></script>
+        <script src="../vendor/jquery-1.11.1.min.js"></script>
+   <!--     <script src="../vendor/TweenMax.min.js"></script> -->
+        <script src="../vendor/TweenLite.min.js"></script>
+        <script src="../vendor/CSSPlugin.min.js"></script> 
+    <!--    <script src="../vendor/prefixfree.min.js"></script> -->
         <script src="../hbSlider.js"></script>
         
         <script>
             $(document).ready(function()
-            {
-                $('.hb-slider').hbSlider({slideEnd: function(target)
+            {                
+                $('.image-slider').hbSlider({slideEnd: function(target)
                 {
-                    $('.slider-buttons input').prop('disabled', false);
+                    $('.image-buttons input').prop('disabled', false);
+                }});
+
+                $('.text-slider').hbSlider({display: 4, duration: 1, slideEnd: function(target)
+                {
+                    $('.text-buttons input').prop('disabled', false);
                 }});
 
                 // Simple click
@@ -33,10 +42,13 @@
         
         <style>
             .image-slider { width: 290px; }
-            .text-slider { width: 400px; }
+            .text-slider { width: 1200px; }
             .hb-slider { border: 1px solid #000; margin: 1em; }
 
             .slider-buttons { position: absolute; z-index: 1; }
+
+            .big { width: 400px; }
+            .small { width: 200px; }
         </style>
     </head>
     
@@ -58,20 +70,36 @@
         </div>
         
         <div class='text-slider hb-slider'>
-            <div class='slide-pane'>
-                This is a text slider! <a href="http://google.com/">With an example link</a>
+            <div class='slide-pane small'>
+                1. This is a text slider! <a href="http://google.com/">With an example link</a>
             </div>
 
-            <div class='slide-pane'>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur nec mi convallis, rutrum quam et, aliquam arcu. Duis laoreet tellus eget posuere luctus. Maecenas id metus sit amet nunc laoreet convallis. Aenean at velit mi. Morbi rhoncus libero a odio egestas blandit. Donec laoreet euismod ante, non volutpat eros dignissim quis. Morbi sem libero, interdum et congue eget, pharetra non massa. Donec adipiscing urna risus. Integer luctus fermentum tellus sit amet bibendum. Vestibulum fringilla purus purus, at scelerisque est mattis et.
+            <div class='slide-pane big'>
+                2. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur nec mi convallis, rutrum quam et, aliquam arcu. Duis laoreet tellus eget posuere luctus. Maecenas id metus sit amet nunc laoreet convallis. Aenean at velit mi. Morbi rhoncus libero a odio egestas blandit. Donec laoreet euismod ante, non volutpat eros dignissim quis. Morbi sem libero, interdum et congue eget, pharetra non massa. Donec adipiscing urna risus. Integer luctus fermentum tellus sit amet bibendum. Vestibulum fringilla purus purus, at scelerisque est mattis et.
             </div>
 
-            <div class='slide-pane'>
-                Aliquam erat volutpat. Mauris justo ante, aliquet nec tincidunt et, fringilla vitae libero. Donec fermentum, mauris vel mattis sollicitudin, lectus lacus scelerisque purus, at faucibus justo ligula non magna. Duis eu urna viverra, dignissim velit in, laoreet arcu. Aenean ligula sem, vehicula et leo ac, cursus suscipit tellus.            
+            <div class='slide-pane small'>
+                3. Aliquam erat volutpat. Mauris justo ante, aliquet nec tincidunt et, fringilla vitae libero. Donec fermentum, mauris vel mattis sollicitudin, lectus lacus scelerisque purus, at faucibus justo ligula non magna. Duis eu urna viverra, dignissim velit in, laoreet arcu. Aenean ligula sem, vehicula et leo ac, cursus suscipit tellus.            
             </div>
 
-            <div class='slide-pane'>
-                Vestibulum dignissim eget metus non gravida. Nunc accumsan lorem vel nisl molestie accumsan. Praesent vitae elementum ligula, in feugiat eros. Vivamus vel porttitor justo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pulvinar hendrerit tellus, vitae vestibulum est accumsan ut. Mauris bibendum pellentesque erat. Nullam nunc libero, mollis sit amet justo ut, malesuada volutpat odio. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+            <div class='slide-pane big'>
+                4. Vestibulum dignissim eget metus non gravida. Nunc accumsan lorem vel nisl molestie accumsan. Praesent vitae elementum ligula, in feugiat eros. Vivamus vel porttitor justo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pulvinar hendrerit tellus, vitae vestibulum est accumsan ut. Mauris bibendum pellentesque erat. Nullam nunc libero, mollis sit amet justo ut, malesuada volutpat odio. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+            </div>
+
+            <div class='slide-pane small'>
+                5. Yay! Ice cream wafer liquorice icing cheesecake pudding cupcake tart biscuit. Donut bear claw cake jelly beans. Dragée candy dragée pudding soufflé sweet oat cake cheesecake. Jujubes gummi bears topping fruitcake lollipop chupa chups.
+            </div>
+
+            <div class='slide-pane big'>
+                6. Wow very cool. Nunc accumsan lorem vel nisl molestie accumsan. Praesent vitae elementum ligula, in feugiat eros. Vivamus vel porttitor justo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pulvinar hendrerit tellus.
+            </div>
+        
+            <div class='slide-pane small'>
+                7. Soufflé lemon drops lollipop sugar plum lollipop bonbon toffee tiramisu. Chupa chups pie jelly biscuit soufflé oat cake jelly soufflé. Cheesecake chocolate bar apple pie gummies topping chocolate muffin marzipan. Caramels gingerbread biscuit icing gingerbread pie. Dragée icing croissant biscuit.
+            </div>
+
+            <div class='slide-pane big'>
+                8. Sweet roll toffee marzipan cookie croissant croissant. Sweet roll candy lemon drops candy canes tart cookie. Jelly dessert marshmallow lollipop chocolate cake soufflé jelly. Candy canes caramels sesame snaps. Oat cake wafer macaroon croissant soufflé.
             </div>
         </div>
 
