@@ -57,10 +57,7 @@ jQuery.fn.reverse = [].reverse;
         // Loop through all panes
         for(var i = 0, l = slider.panes.length; i < l; i++)
         {
-            var index = slider.panes[i];
-
-            console.log(index);
-            
+            var index = slider.panes[i];            
             var pane = $(slider).find('.slide-pane').eq(index);
 
             // Before sliding left, find all panes less than the viewing area and position them to the end of the slider
@@ -71,26 +68,37 @@ jQuery.fn.reverse = [].reverse;
                     TweenLite.set(pane[0], {x: bounds.right});
                     bounds.right += pane.outerWidth(true);
 
-                    delete slider.panes[i];
-                    moved.push(index);
-                }
-            }
-
-            // Or if we're sliding right, find all panes greater than the viewing area and position them at the beginning of the slider
-            else
-            {
-                if(pane.position().left >= $(slider).width())
-                {
-                    TweenLite.set(pane[0], {x: bounds.left - pane.outerWidth(true)});
-                    bounds.left -= pane.outerWidth(true);
-
-                    delete slider.panes[i];
+                    slider.panes[i] = undefined;
                     moved.push(index);
                 }
             }
         }
 
+        // Or if we're sliding right, find all panes greater than the viewing area and position them at the beginning of the slider
+        if(direction == 'right')
+        {
+            // Loop through panes backwards
+            for(var i = slider.panes.length; i > 0; i--)
+            {
+                var index = slider.panes[i - 1];
+                var pane = $(slider).find('.slide-pane').eq(index);
+
+                if(pane.position().left >= $(slider).width())
+                {
+                    TweenLite.set(pane[0], {x: bounds.left - pane.outerWidth(true)});
+                    bounds.left -= pane.outerWidth(true);
+
+                    slider.panes[i - 1] = undefined;
+                    moved.unshift(index);
+                }
+            }
+        }
+
+
         slider.panes.clean();
+
+console.log("Panes: ", slider.panes);
+console.log("Moved: ", moved);
 
         if(direction == 'left')
             slider.panes = slider.panes.concat(moved);
@@ -100,6 +108,34 @@ jQuery.fn.reverse = [].reverse;
 console.log(slider.panes);
 
      //   return slider;
+    }
+
+    function set_offscreen(slider, slide)
+    {
+        // Loop through all panes that need to be animated
+        var offset = (slide.direction == 'left') ? $(slider).width() : 0;
+
+        // Start at slide.index, until index + slider.options.display
+        for(var i = slide.index, l = slide.index + slider.options.display; i < l; i++)
+        {
+            var index = i;
+            
+            if(index >= $(slider).find('.slide-pane').length)
+                index -= $(slider).find('.slide-pane').length;
+
+            var pane = $(slider).find('.slide-pane').eq(index);
+            
+            if(slide.direction == 'left')
+            {
+                TweenLite.set(pane[0], {x: offset});
+                offset += pane.outerWidth(true);
+            }
+            else
+            {
+                offset -= pane.outerWidth(true);
+                TweenLite.set(pane[0], {x: offset});
+            }
+        }
     }
 
     function calculate_bounds(slider)
@@ -130,7 +166,7 @@ console.log(slider.panes);
     function animate(slide)
     {
         var slider = this;
-        slider.dataset.animating = 1;
+        slider.animating = true;
 
         // Find element we're moving to
         var to;
@@ -184,7 +220,7 @@ console.log(slider.panes);
        // console.log(slide_panes, index_from, index_to, difference)
 
         // If the difference is < the number of panes being displayed
-        if(difference < this.options.display || 1)
+        if(difference < this.options.display)
         {
 //            Say you start at 4 and you're going next, so you'd be going to 0
  //           So we need to go... from's index for distance
@@ -225,8 +261,42 @@ console.log(slider.panes);
         // Else, simply animate everything off screen
         else
         {
-//            var distance = $(
+            var distance = $(slider).width();
+            var direction = (slide.direction == 'right') ? -1 : 1;
+
+            set_offscreen(slider, slide);
             
+            // Find current element
+            var from = $(slider).find('.slide-pane.current');
+
+            // Start at current index
+            for(var i = from.index(), l = from.index() + slider.options.display; i < l; i++)
+            {
+                var index = i;
+                
+                if(index >= $(slider).find('.slide-pane').length)
+                    index -= $(slider).find('.slide-pane').length;
+
+                var pane = $(slider).find('.slide-pane').eq(index);
+
+                TweenLite.to(pane[0], slider.options.duration, {x: '-=' + distance * direction, onComplete: animated, onCompleteParams: [slider, slide]});
+            }
+            
+
+            // Start at slide.index, until index + slider.options.display
+            for(var i = slide.index, l = slide.index + slider.options.display; i < l; i++)
+            {
+                var index = i;
+                
+                if(index >= $(slider).find('.slide-pane').length)
+                    index -= $(slider).find('.slide-pane').length;
+
+                var pane = $(slider).find('.slide-pane').eq(index);
+
+                TweenLite.to(pane[0], slider.options.duration, {x: '-=' + distance * direction, onComplete: animated, onCompleteParams: [slider, slide]});
+            }
+
+//            slider.animating = false;
 console.log('what');
         }        
     }
@@ -236,30 +306,18 @@ console.log('what');
         
         var pane = $(this.target);
 
+        slider.animating = false;
+        
+        $(slider).find('.slide-pane.current').removeClass('current');
+        $(slider).find('.slide-pane').eq(slide.index).addClass('current');
+
+        if(typeof slider.options.slideEnd == "function") slider.options.slideEnd(slider);
+
+
 //        if(pane.index('.slide-pane') == $(slider).find('.slide-pane').length - 1)
         if($(slider).find('.slide-pane').last()[0] == pane[0])
         {
-            slider.dataset.animating = 0;
-            
-            $(slider).find('.cloned').remove();
-
-            $(slider).find('.slide-pane.current').removeClass('current');
-            $(slider).find('.slide-pane').eq(slide.index).addClass('current');
-
-         //   set_positions(slider, slide.direction);
-
-            
-//            set_offsets(slider);
-            
-            if(typeof slider.options.slideEnd == "function") slider.options.slideEnd(slider);
         }
-
-        // 
-        pane.position()
-
-     //   console.log("hi", pane.index());
-        
-//        console.log(this, arguments);
     }
 
     /*************************
@@ -343,7 +401,7 @@ console.log('what');
             // Else if the request is simply a number
             if(input == parseInt(input))   slide.index = input;
 
-            if(!parseInt(this.dataset.animating))
+            if(!this.animating)
             {
                 animate.call(this, slide);
                 if(typeof slider.options != "undefined" && typeof slider.options.slideStart == "function") slider.options.slideStart(this);
