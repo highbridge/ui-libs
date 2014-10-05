@@ -19,7 +19,7 @@
                     $('.image-buttons input').prop('disabled', false);
                 }});
 
-                $('.text-slider').hbSlider({display: 4, duration: 1, slideEnd: function(target)
+                $('.text-slider').hbSlider({display: 2, duration: 1, slideEnd: function(target)
                 {
                     $('.text-buttons input').prop('disabled', false);
                 }});
@@ -37,12 +37,18 @@
                     $('.text-slider.hb-slider').trigger('slide-'+this.dataset.value);
                     $('.text-buttons input').prop('disabled', true);                    
                 });
+
+                $('body').on('click', '.text-nav input', function()
+                {
+                    var direction = $('.direction').val();
+                    $('.text-slider').trigger('slide-to', {index: parseInt($(this).val()) - 1, direction: direction});
+                });
             });
         </script>
         
         <style>
             .image-slider { width: 290px; }
-            .text-slider { width: 1200px; }
+            .text-slider { width: 600px; }
             .hb-slider { border: 1px solid #000; margin: 1em; }
 
             .slider-buttons { position: absolute; z-index: 1; }
@@ -107,6 +113,24 @@
         <div class='slider-buttons text-buttons'>
             <input type="button" data-value="next" value="Next">
             <input type="button" data-value="prev" value="Previous">
+        </div>
+
+        <br /><br />
+
+        <div class='text-nav'>
+            <select class='direction'>
+                <option value="left" selected>Left</option>
+                <option value="right">Right</option>
+            </select>
+            
+            <input type="button" value="1">
+            <input type="button" value="2">
+            <input type="button" value="3">
+            <input type="button" value="4">
+            <input type="button" value="5">
+            <input type="button" value="6">
+            <input type="button" value="7">
+            <input type="button" value="8">
         </div>
     </body>
 </html>

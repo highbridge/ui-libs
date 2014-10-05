@@ -1,4 +1,4 @@
-body { margin-left: 500px; }
+body { margin-left: 200px; }
 
 /* Required CSS for hbSlider.js */
 .hb-slider { 
@@ -8,14 +8,14 @@ body { margin-left: 500px; }
 
 .slide-pane { 
     position: absolute;
-    opacity: 1;
+    opacity: 0;
     width: 100%;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
 }
 
 .slide-pane.current,
-.slide-pane.visible { 
+.slide-pane.active { 
     opacity: 1;
     z-index: 1;
 }

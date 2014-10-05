@@ -31,25 +31,25 @@ jQuery.fn.reverse = [].reverse;
     {
         // Ensure a pane is set as current on load
         if($(slider).find('.slide-pane.current').length == 0)
-            $(slider).find('.slide-pane').eq(0).addClass('current');
+            $(slider).find('.slide-pane').eq(0).addClass('current active');
 
-        var offset = 0;
-        slider.panes = [];
+        var offset = $(slider).find('.slide-pane').eq(0).outerWidth(true);
 
-        // Loop through all panes and set their position
-        $(slider).find('.slide-pane').each(function()
+        // Determine visible panes
+        for(var i = 1, l = slider.options.display; i < l; i++)
         {
-            TweenLite.set(this, {x: offset+'px'});
-            offset += $(this).outerWidth(true);
+            var pane = $(slider).find('.slide-pane').eq(i);
+            
+            TweenLite.set(pane[0], {x: offset+'px'});
+            offset += pane.outerWidth(true);
 
-            // Save the index for every slide
-            slider.panes.push($(this).index());
-        });
+            pane.addClass('active');
+        }
     }
 
     function set_positions(slider, direction)
     {
-        console.log(slider.panes);
+ //       console.log(slider.panes);
         
         var bounds = calculate_bounds(slider);
         var moved = [];
@@ -301,7 +301,266 @@ console.log('what');
         }        
     }
 
-    function animated(slider, slide)
+    // Initialize slider
+    // Show first pane
+    // Show any subsequent panes based on display option
+
+    function new_animate(slide)
+    {
+        var slider = this;
+        
+        // Where are we now?
+        var from = $(slider).find('.slide-pane.current');
+        
+        // Where are we moving to?
+        var to = $(slider).find('.slide-pane').eq(slide.index);
+        
+        // How far do we have to move to get to where we're going?
+        // Find the difference between the index of current pane and the index of where we're sliding to
+
+        var difference;
+
+        // If the index we're moving to is less than the current index and we're moving left
+        if(to.index() < from.index() && slide.direction == 'left')
+            difference = (to.index() + $(slider).find('.slide-pane').length) - from.index();
+
+        // If the index we're moving to is greater than the current index and we're moving right
+        else if(to.index() > from.index() && slide.direction == 'right')
+            difference = (from.index() + $(slider).find('.slide-pane').length) - to.index();
+
+        // Else...
+        else
+            difference = Math.abs(from.index() - to.index());
+
+        // Loop through all elements 
+
+        var panes = [];
+
+        // Populate the panes array based on the number of panes we have, times two
+        for(var i = 0, l = $(this).find('.slide-pane').length; i < l * 2; i++)
+        {
+            // Why times two?
+            // It lets us find the index of the panes we need to animate, regardless of direction, without having to do bounds checking
+            
+            if(l > i)
+                panes.push(i);
+            else
+                panes.push(i - l);
+        }
+
+        var direction, start;
+        var distance = 0;
+
+        if(slide.direction == 'right')
+        {
+            direction = -1;
+            start = from.index() + $(slider).find('.slide-pane').length;
+
+            for(var i = start, l = start - difference; i > l; i--)
+            {
+                console.log("Index: ", i);
+                distance += $(slider).find('.slide-pane').eq(panes[i - 1]).outerWidth(true);
+                $(slider).find('.slide-pane').eq(panes[i - 1]);
+            }
+        }
+        else
+        {
+            direction = 1;
+            start = from.index();
+
+            for(var i = start, l = start + difference; i < l; i++)
+            {
+                distance += $(slider).find('.slide-pane').eq(panes[i]).outerWidth(true);
+                $(slider).find('.slide-pane').eq(panes[i]);
+            }
+        }
+
+
+//    console.log("------------------------------");
+//    console.log("Panes: ", panes);
+//    console.log("Start: ", start);
+//    console.log("Difference: ", difference);
+
+
+
+        var queue = {};
+        var offset_to = (slide.direction == 'right') ? $(slider).width() : 0;
+
+// Get all current panes
+// Find their current position
+// Determine the offset they need to move to (off screen)
+
+        // Start at current index
+        for(var i = from.index(), l = from.index() + slider.options.display; i < l; i++)
+        {
+            var index = i;
+            
+            if(index >= $(slider).find('.slide-pane').length)
+                index -= $(slider).find('.slide-pane').length;
+
+            var pane = $(slider).find('.slide-pane').eq(index);
+
+            if(slide.direction == 'right')
+            {
+                queue[index] = {from: pane.position().left, to: offset_to, status: 'inactive'};
+                offset_to += pane.outerWidth(true);
+            }
+            else
+            {
+                offset_to -= pane.outerWidth(true);
+                queue[index] = {from: pane.position().left, to: offset_to, status: 'inactive'};
+            }
+        }
+
+// Get all new panes
+// Do they need to have a position defined?
+// Set their starting position if necessary
+// Determine where they need to move to
+
+        var offset_from = (slide.direction == 'right') ? 0 : $(slider).width();
+        var offset_to = (slide.direction == 'right') ? $(slider).width() : 0;
+
+
+//start at 4, 5, 6
+
+//start at 6, 5, 4
+
+if(slide.direction == 'right')
+{
+        // Start at slide.index, until index + slider.options.display
+        for(var i = slide.index + slider.options.display, l = slide.index; i > l; i--)
+        {
+            var index = i - 1;
+            
+            if(index >= $(slider).find('.slide-pane').length)
+                index -= $(slider).find('.slide-pane').length;
+
+            console.log(index);
+
+
+            var pane = $(slider).find('.slide-pane').eq(index);
+
+            if(!pane.hasClass('active'))
+            {
+                pane.addClass('active');
+
+                if(slide.direction == 'right')
+                {
+                    offset_from -= pane.outerWidth(true);
+                    offset_to -= pane.outerWidth(true);
+
+                    queue[index] = {from: offset_from, to: offset_to, status: 'active'};
+
+
+                }
+                else
+                {
+                    queue[index] = {from: offset_from, to: offset_to, status: 'active'};
+
+                    offset_from += pane.outerWidth(true);
+                    offset_to += pane.outerWidth(true);
+                }
+            }
+            else
+            {
+                if(slide.direction == 'right')
+                {
+                    offset_to -= pane.outerWidth(true);
+                    queue[index] = {from: pane.position().left, to: offset_to, status: 'active'};
+
+
+                }
+                else
+                {
+                    queue[index] = {from: pane.position().left, to: offset_to, status: 'active'};
+
+                    offset_to += pane.outerWidth(true);
+                }
+
+            }
+
+//            queue[index] = 'active';
+        }
+
+}
+else
+{
+
+
+        // Start at slide.index, until index + slider.options.display
+        for(var i = slide.index, l = slide.index + slider.options.display; i < l; i++)
+        {
+            var index = i;
+            
+            if(index >= $(slider).find('.slide-pane').length)
+                index -= $(slider).find('.slide-pane').length;
+
+            var pane = $(slider).find('.slide-pane').eq(index);
+
+            if(!pane.hasClass('active'))
+            {
+                pane.addClass('active');
+
+                if(slide.direction == 'right')
+                {
+                    offset_from -= pane.outerWidth(true);
+
+                    queue[index] = {from: offset_from, to: offset_to, status: 'active'};
+
+                    offset_to += pane.outerWidth(true);
+
+                }
+                else
+                {
+                    queue[index] = {from: offset_from, to: offset_to, status: 'active'};
+
+                    offset_from += pane.outerWidth(true);
+                    offset_to += pane.outerWidth(true);
+                }
+            }
+            else
+            {
+                if(slide.direction == 'right')
+                {
+                    queue[index] = {from: pane.position().left, to: offset_to, status: 'active'};
+
+                    offset_to += pane.outerWidth(true);
+
+                }
+                else
+                {
+                    queue[index] = {from: pane.position().left, to: offset_to, status: 'active'};
+
+                    offset_to += pane.outerWidth(true);
+                }
+
+            }
+
+//            queue[index] = 'active';
+        }
+
+
+}
+ //       var duration = calculate_duration(slider, distance, slider.options.duration);
+
+        for(var i = 0, keys = Object.keys(queue), l = keys.length; i < l; ++i)
+        {
+            var index = keys[i];
+            var data = queue[keys[i]];
+            var pane = $(slider).find('.slide-pane').eq(index);
+            var duration = calculate_duration(slider, Math.abs(data.from - data.to), slider.options.duration);
+
+            TweenLite.fromTo(pane[0], duration, {x: data.from}, {x: data.to, onComplete: animated, onCompleteParams: [slider, slide, data.status]});
+        }
+
+        // Create a queue for all animations
+        // Loop through all currently displayed panes and queue them to animate off screen
+        // Loop through all panes to be displayed and queue them to animate to their calculated position
+        // Remove duplicates somehow
+        // Perform animation queue
+    }
+    
+    function animated(slider, slide, status)
     {
         
         var pane = $(this.target);
@@ -311,6 +570,11 @@ console.log('what');
         $(slider).find('.slide-pane.current').removeClass('current');
         $(slider).find('.slide-pane').eq(slide.index).addClass('current');
 
+        if(status == 'active')
+            pane.addClass('active');
+        else
+            pane.removeClass('active');
+
         if(typeof slider.options.slideEnd == "function") slider.options.slideEnd(slider);
 
 
@@ -319,6 +583,8 @@ console.log('what');
         {
         }
     }
+
+
 
     /*************************
      * 
@@ -367,32 +633,35 @@ console.log('what');
         });
         
         // Convenience event for going to the next pane
-        $(this).on('slide-next', function()
+        $(slider).on('slide-next', function()
         {
-            var current = $(this).find('.slide-pane.current');
+            var current = $(slider).find('.slide-pane.current');
             var index = current.index();
 
             var next = index + 1;
 
-//            if(next >= $(this).find('.slide-pane').length)
-//                next = 0;
+            if(next >= $(slider).find('.slide-pane').length)
+                next = 0;
 
-            $(this).trigger('slide-to', next);
+            $(slider).trigger('slide-to', next);
         });
 
         // Convenience event for going to the previous pane
-        $(this).on('slide-prev', function()
+        $(slider).on('slide-prev', function()
         {
-            var current = $(this).find('.slide-pane.current');
+            var current = $(slider).find('.slide-pane.current');
             var index = current.index();
 
             var prev = index - 1;
 
-            $(this).trigger('slide-to', {index: prev, direction: 'right'});
+            if(prev < 0)
+                prev = $(slider).find('.slide-pane').length - 1;
+
+            $(slider).trigger('slide-to', {index: prev, direction: 'right'});
         });
 
         // Allows sliding to any pane based on its index
-        $(this).on('slide-to', function(event, input)
+        $(slider).on('slide-to', function(event, input)
         {
             var slide = {index: 0, direction: 'left'};
 
@@ -401,10 +670,10 @@ console.log('what');
             // Else if the request is simply a number
             if(input == parseInt(input))   slide.index = input;
 
-            if(!this.animating)
+            if(!slider.animating)
             {
-                animate.call(this, slide);
-                if(typeof slider.options != "undefined" && typeof slider.options.slideStart == "function") slider.options.slideStart(this);
+                new_animate.call(slider, slide);
+                if(typeof slider.options != "undefined" && typeof slider.options.slideStart == "function") slider.options.slideStart(slider);
             }
 
 /*
