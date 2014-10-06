@@ -40,8 +40,7 @@
 
                 $('body').on('click', '.text-nav input', function()
                 {
-                    var direction = $('.direction').val();
-                    $('.text-slider').trigger('slide-to', {index: parseInt($(this).val()) - 1, direction: direction});
+                    $('.text-slider').trigger('slide-to', parseInt($(this).val()) - 1);
                 });
             });
         </script>
@@ -117,12 +116,7 @@
 
         <br /><br />
 
-        <div class='text-nav'>
-            <select class='direction'>
-                <option value="left" selected>Left</option>
-                <option value="right">Right</option>
-            </select>
-            
+        <div class='text-nav'>            
             <input type="button" value="1">
             <input type="button" value="2">
             <input type="button" value="3">
