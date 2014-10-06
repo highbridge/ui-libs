@@ -221,7 +221,7 @@
         if($(slider).find('.animating').length == 0)
         {
             slider.animating = false;
-            if(typeof slider.options.slideEnd == "function") slider.options.slideEnd(slider);
+            if(typeof slider.options.slideEnd == "function") slider.options.slideEnd.call(slider);
         }
     }
 
@@ -335,7 +335,7 @@
                 if(!slider.animating)
                 {
                     animate.call(slider, slide);
-                    if(typeof slider.options != "undefined" && typeof slider.options.slideStart == "function") slider.options.slideStart(slider);
+                    if(typeof slider.options != "undefined" && typeof slider.options.slideStart == "function") slider.options.slideStart.call(slider);
                 }
             }
         });
