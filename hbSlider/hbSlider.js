@@ -3,8 +3,6 @@
  *
  */
 
-jQuery.fn.reverse = [].reverse;
-
 (function($)
 {
     /*************************
