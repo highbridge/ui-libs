@@ -1,0 +1,88 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>HighBridge Gallery Demo</title>
+        <script src="../vendor/jquery-1.11.1.min.js"></script>
+        <script src="../hbGallery.js"></script>
+        
+        <script>
+            $(document).ready(function()
+            {
+                $('.gallery').hbGallery({
+                    children: '.thumbnail',
+                    parent: '.overlay img',
+                    callback: function()
+                    {
+                        $('.nav input').prop('disabled', false);
+                    }
+                });
+
+                $('body').on('click', '.gallery .thumbnail', function()
+                {
+                    $('.overlay').fadeIn();
+
+                    // Hide the previous image when opening the overlay
+                    $('.gallery').trigger('gallery-hide');
+                    $('.gallery').trigger('gallery-show', $(this).index());
+                });
+
+                $('body').on('click', '.nav input', function()
+                {
+                    $('.gallery').trigger('gallery-'+this.dataset.value);
+                    $('.nav input').prop('disabled', true);                    
+                });
+
+                $('body').on('click', '.overlay .close', function()
+                {
+                    $('.overlay').fadeOut();
+                });
+
+            });
+        </script>
+        
+        <style>
+            .overlay {
+                background-color: rgba(0, 0, 0, 0.8);
+                color: #fff;
+                display: none;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+            }
+
+            .overlay .close {
+                cursor: pointer;
+            }
+
+            .thumbnail {
+                cursor: pointer;
+                width: 50px;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <p>Hello world!</p>
+
+        <div class="overlay">
+            <div class="close">Close</div>
+            
+            <img>
+
+            <div class="nav">
+                <input type="button" data-value="next" value="Next">
+                <input type="button" data-value="prev" value="Previous">
+            </div>
+        </div>
+
+        <div class="gallery">
+            <img class="thumbnail" src='img/kristyfish.png' data-src='img/kristyfish.png'>
+            <img class="thumbnail" src='img/spacefish.png' data-src='img/spacefish.png'>
+            <img class="thumbnail" src='img/dat-fish.png' data-src='img/dat-fish.png'>
+            <img class="thumbnail" src='img/gun-fish.png' data-src='img/gun-fish.png'>
+            <img class="thumbnail" src='img/dead-fish.png' data-src='img/dead-fish.png'>
+        </div>
+    </body>
+</html>
