@@ -1,3 +1,4 @@
+
 /*
  * hbGallery -- HighBridge Gallery
  *
@@ -52,8 +53,11 @@
         }
         else
         {
+            gallery.animating = false;
+            $('body').find(gallery.options.parent).fadeIn();
+             
             // Let the callback know we didn't do anything
-            if(typeof gallery.options.callback == "function") gallery.options.callback.call(gallery, false);
+            if(typeof gallery.options.callback == "function") gallery.options.callback.call(gallery, from.index(gallery.options.children));
         }
     }
 
