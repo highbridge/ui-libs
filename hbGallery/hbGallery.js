@@ -91,7 +91,7 @@
         $(gallery).on('gallery-prev', function()
         {
             var current = $(gallery).find(gallery.options.children+'.current');
-            var index = current.index();
+            var index = current.index(gallery.options.children);
 
             var prev = index - 1;
 
