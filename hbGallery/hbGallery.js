@@ -24,22 +24,30 @@
 
     function animate(gallery, index)
     {
+        gallery.animating = true;
+        
         var from = $(gallery).find(gallery.options.children+'.current');
         var to = $(gallery).find(gallery.options.children).eq(index);
 
         // Make sure we're actually going somewhere
-        if(from.index() != to.index())
+        if(from.index(gallery.options.children) != to.index(gallery.options.children))
         {
             $('body').find(gallery.options.parent).fadeOut(function()
             {
                 $(this).attr('src', to[0].dataset.src);
-                $(this).fadeIn();
 
-                from.removeClass('current');
-                to.addClass('current');
+                $(this).on('load', function()
+                {
+                    $(this).fadeIn();
 
-                // Let the callback know where we moved to
-                if(typeof gallery.options.callback == "function") gallery.options.callback.call(gallery, index);
+                    from.removeClass('current');
+                    to.addClass('current');
+
+                    gallery.animating = false;
+
+                    // Let the callback know where we moved to
+                    if(typeof gallery.options.callback == "function") gallery.options.callback.call(gallery, index);
+                });
             });
         }
         else
@@ -69,7 +77,7 @@
         $(gallery).on('gallery-next', function()
         {
             var current = $(gallery).find(gallery.options.children+'.current');
-            var index = current.index();
+            var index = current.index(gallery.options.children);
 
             var next = index + 1;
 
