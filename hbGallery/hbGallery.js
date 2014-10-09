@@ -31,8 +31,10 @@
         var to = $(gallery).find(gallery.options.children).eq(index);
 
         // Make sure we're actually going somewhere
-        if(from.index(gallery.options.children) != to.index(gallery.options.children))
+        if(to.length && from.index(gallery.options.children) != to.index(gallery.options.children))
         {
+            if(typeof gallery.options.animating == "function") gallery.options.animating.call(gallery, index);
+
             $('body').find(gallery.options.parent).fadeOut(function()
             {
                 $(this).attr('src', to[0].dataset.src);
@@ -47,7 +49,7 @@
                     gallery.animating = false;
 
                     // Let the callback know where we moved to
-                    if(typeof gallery.options.callback == "function") gallery.options.callback.call(gallery, index);
+                    if(typeof gallery.options.animated == "function") gallery.options.animated.call(gallery, index);
                 });
             });
         }
@@ -57,7 +59,7 @@
             $('body').find(gallery.options.parent).fadeIn();
              
             // Let the callback know we didn't do anything
-            if(typeof gallery.options.callback == "function") gallery.options.callback.call(gallery, from.index(gallery.options.children));
+            if(typeof gallery.options.animated == "function") gallery.options.animated.call(gallery, from.index(gallery.options.children));
         }
     }
 
