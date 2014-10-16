@@ -246,25 +246,26 @@
         {
             // First clear any previous styles set on the slider
             $(slider).removeAttr('style');
-            
-            // Loop through all panes and set the container height to their size
-            $(slider).find('.slide-pane').each(function()
+
+            // If the slider isn't disabled
+            if(!$(slider).hasClass('disabled'))
             {
-                $(this).css('height', 'auto');
-                var parent = $(slider);
-
-                if($(this).outerHeight(true) > parent.height())
+                // Loop through all panes and set the container height to their size
+                $(slider).find('.slide-pane').each(function()
                 {
-                    parent.height($(this).outerHeight(true));
-                }
+                    $(this).css('height', 'auto');
+                    var parent = $(slider);
 
-                $(this).css('height', '100%');
-            });
+                    if($(this).outerHeight(true) > parent.height())
+                    {
+                        parent.height($(this).outerHeight(true));
+                    }
 
-            var current = $(slider).find('.slide-pane.current').index();
+                    $(this).css('height', '100%');
+                });
 
-            // Trigger slide to current, fixing any potential difference in positioning after resizing
-            $(slider).trigger('slide-to', current);
+                $(slider).trigger('slide-resize');
+            }
         });
 
         // Trigger resize now to try to position everything
@@ -304,6 +305,15 @@
             $(slider).trigger('slide-to', prev);
         });
 
+        $(slider).on('slide-resize', function()
+        {
+            // Find the current pane
+            var current = $(slider).find('.slide-pane.current').index();
+
+            // Trigger slide to current, fixing any potential difference in positioning
+            $(slider).trigger('slide-to', current);
+        });
+
         // Allows sliding to any pane based on its index
         $(slider).on('slide-to', function(event, input)
         {
@@ -334,7 +344,7 @@
             if(from.index() == last && to.index() == 0)
                 slide.direction = 'left';
 
-            if(!slider.animating)
+            if(!slider.animating && !$(slider).hasClass('disabled'))
             {
                 animate.call(slider, slide);
                 if(typeof slider.options != "undefined" && typeof slider.options.slideStart == "function") slider.options.slideStart.call(slider);
