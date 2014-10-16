@@ -260,6 +260,11 @@
 
                 $(this).css('height', '100%');
             });
+
+            var current = $(slider).find('.slide-pane.current').index();
+
+            // Trigger slide to current, fixing any potential difference in positioning after resizing
+            $(slider).trigger('slide-to', current);
         });
 
         // Trigger resize now to try to position everything
@@ -313,30 +318,26 @@
             var to = $(slider).find('.slide-pane').eq(slide.index);
             var last = $(slider).find('.slide-pane').length - 1;
 
-            // Make sure we're actually going somewhere
-            if(from.index() != to.index())
+            // If the pane we're moving to comes before the current, move right
+            if(from.index() > to.index())
+                slide.direction = 'right';
+
+            // If the pane we're moving to comes after the current, move left
+            if(from.index() < to.index())
+                slide.direction = 'left';
+
+            // If we're moving to the last pane from the first
+            if(from.index() == 0 && to.index() == last)
+                slide.direction = 'right';
+
+            // If we're moving to the first pane from the last
+            if(from.index() == last && to.index() == 0)
+                slide.direction = 'left';
+
+            if(!slider.animating)
             {
-                // If the pane we're moving to comes before the current, move right
-                if(from.index() > to.index())
-                    slide.direction = 'right';
-
-                // If the pane we're moving to comes after the current, move left
-                if(from.index() < to.index())
-                    slide.direction = 'left';
-
-                // If we're moving to the last pane from the first
-                if(from.index() == 0 && to.index() == last)
-                    slide.direction = 'right';
-
-                // If we're moving to the first pane from the last
-                if(from.index() == last && to.index() == 0)
-                    slide.direction = 'left';
-
-                if(!slider.animating)
-                {
-                    animate.call(slider, slide);
-                    if(typeof slider.options != "undefined" && typeof slider.options.slideStart == "function") slider.options.slideStart.call(slider);
-                }
+                animate.call(slider, slide);
+                if(typeof slider.options != "undefined" && typeof slider.options.slideStart == "function") slider.options.slideStart.call(slider);
             }
         });
     };
