@@ -20,7 +20,7 @@
         first.addClass('current');
 
         // Populate the parent with our first child
-        $('body').find(gallery.options.parent).attr('src', first[0].dataset.src);
+        $('body').find(gallery.options.parent).attr('src', first.data('src'));
     }
 
     function animate(gallery, index)
@@ -37,7 +37,7 @@
 
             $('body').find(gallery.options.parent).fadeOut(function()
             {
-                $(this).attr('src', to[0].dataset.src);
+                $(this).attr('src', to.data('src'));
 
                 $(this).on('load', function()
                 {

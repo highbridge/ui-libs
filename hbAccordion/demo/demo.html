@@ -1,0 +1,47 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>HighBridge Accordion Demo</title>
+        <script src="../vendor/jquery-1.11.1.min.js"></script>
+        <script src="../hbAccordion.js"></script>
+        
+        <script>
+            $(document).ready(function() {                
+                $('.accordion').hbAccordion({ children: '.panel-body'});
+
+                $('body').on('click', '.accordion a', function(){
+                    var index = $(this).closest('.panel').index();
+                    $('.accordion').trigger('accordion-change', index);
+                });
+            });
+        </script>
+
+    </head>
+    
+    <body>
+        <h1>Highbridge Creative, Inc.</h1>
+
+        <div class="accordion">
+            <div class="panel">
+                <a href="#">Item 1</a>
+                <div class="panel-body">
+                   <p>Banjo keytar Pinterest cardigan cray PBR&B dreamcatcher. Skateboard occupy Intelligentsia try-hard, migas VHS Blue Bottle raw denim Williamsburg. Hella 90's direct trade taxidermy sriracha. Cronut scenester selfies, slow-carb ethical cold-pressed Thundercats. Farm-to-table put a bird on it Pitchfork, lomo dreamcatcher seitan readymade viral. Brunch ennui Portland vinyl hashtag. Chambray health goth ugh YOLO synth literally.</p>
+                </div>
+            </div>
+            <div class="panel">
+                <a href="#">Item 2</a>
+                <div class="panel-body">
+                   <p>Pug pop-up Kickstarter Bushwick master cleanse leggings. Authentic cray selfies drinking vinegar small batch. Disrupt Pitchfork chambray, polaroid single-origin coffee Etsy 90's cornhole gentrify mumblecore Godard 8-bit wayfarers. Before they sold out gluten-free Godard church-key letterpress, messenger bag swag put a bird on it vinyl Portland flexitarian. Locavore cray cardigan tattooed, Godard YOLO yr gentrify kale chips viral High Life wolf asymmetrical Odd Future. Intelligentsia selvage heirloom, +1 hella Pitchfork pop-up lomo cornhole Godard messenger bag. Master cleanse skateboard art party quinoa synth.</p>
+                </div>
+            </div>
+            <div class="panel">
+                <a href="#">Item 3</a>
+                <div class="panel-body">
+                   <p>Sriracha pickled keffiyeh, Neutra semiotics cray health goth selfies cornhole migas XOXO Carles twee dreamcatcher Marfa. McSweeney's pork belly quinoa heirloom, bicycle rights Shoreditch fanny pack forage hella 90's fap kale chips. Chambray Shoreditch forage, McSweeney's literally iPhone cliche disrupt. Artisan sriracha freegan, pop-up polaroid YOLO taxidermy ugh Vice Schlitz +1 Helvetica distillery. Etsy sartorial master cleanse kitsch, cornhole Truffaut Intelligentsia taxidermy locavore polaroid vegan DIY mixtape you probably haven't heard of them tofu.</p>
+                </div>
+            </div>
+        </div>
+
+        
+    </body>
+</html>
