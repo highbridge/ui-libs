@@ -253,9 +253,12 @@
         // When resize is triggered
         $(window).on('resize', function(event, params)
         {
-            // First clear any previous styles set on the slider
-            $(slider).removeAttr('style');
-
+            // Clear any styles if this slider has become disabled
+            if($(slider).hasClass('disabled'))
+            {
+                $(slider).removeAttr('style');
+            }
+            
             // If the slider isn't disabled
             if(!$(slider).hasClass('disabled'))
             {
@@ -263,15 +266,23 @@
                 if(slider.options.dynamicHeight)
                 {
                     var pane = $(slider).find('.sliding-to');
-                    var parent = $(slider);
-                    
-                    pane.css('height', 'auto');
-                    parent.height(pane.outerHeight(true));
-                    pane.css('height', '100%');
+
+                    // Only adjust height if we're actually sliding somewhere
+                    if(pane.length)
+                    {
+                        var parent = $(slider);
+                        
+                        pane.css('height', 'auto');
+                        parent.height(pane.outerHeight(true));
+                        pane.css('height', '100%');
+                    }
                 }
                 // Else, if this is a static height slider
                 else
                 {
+                    // Clear any styles on the slider
+                    $(slider).removeAttr('style');
+                    
                     // Loop through all panes and set the container height to the maximum pane height
                     $(slider).find('.slide-pane').each(function()
                     {
