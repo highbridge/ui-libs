@@ -47,6 +47,9 @@
         
         // Where are we moving to?
         var to = $(slider).find('.slide-pane').eq(slide.index);
+
+        // Add a class on the slide we're moving to
+        to.addClass('sliding-to');
         
         // Find the difference between the index of current pane and the index of where we're sliding to
         var difference;
@@ -191,6 +194,12 @@
                 }
             }
         }
+
+        // Trigger resize if this is a dynamic height slider
+        if(slider.options.dynamicHeight)
+        {
+            $(window).trigger('resize', {animation: true});
+        }
         
         for(var i = 0, keys = Object.keys(queue), l = keys.length; i < l; ++i)
         {
@@ -209,7 +218,7 @@
         var pane = $(this.target);
         
         $(slider).find('.slide-pane.current').removeClass('current');
-        $(slider).find('.slide-pane').eq(slide.index).addClass('current');
+        $(slider).find('.slide-pane').eq(slide.index).addClass('current').removeClass('sliding-to');
 
         if(status == 'active')
             pane.addClass('active');
@@ -236,13 +245,13 @@
         var slider = this;
 
         // Define default slider.options
-        slider.options = {display: 1, duration: 0.5};
+        slider.options = {display: 1, duration: 0.5, dynamicHeight: false};
         slider.options = $.extend(slider.options, input);
 
         init(slider);
         
         // When resize is triggered
-        $(window).on('resize', function()
+        $(window).on('resize', function(event, params)
         {
             // First clear any previous styles set on the slider
             $(slider).removeAttr('style');
@@ -250,21 +259,39 @@
             // If the slider isn't disabled
             if(!$(slider).hasClass('disabled'))
             {
-                // Loop through all panes and set the container height to their size
-                $(slider).find('.slide-pane').each(function()
+                // Animate slider to use the height of the slide we're sliding to
+                if(slider.options.dynamicHeight)
                 {
-                    $(this).css('height', 'auto');
+                    var pane = $(slider).find('.sliding-to');
                     var parent = $(slider);
-
-                    if($(this).outerHeight(true) > parent.height())
+                    
+                    pane.css('height', 'auto');
+                    parent.height(pane.outerHeight(true));
+                    pane.css('height', '100%');
+                }
+                // Else, if this is a static height slider
+                else
+                {
+                    // Loop through all panes and set the container height to the maximum pane height
+                    $(slider).find('.slide-pane').each(function()
                     {
-                        parent.height($(this).outerHeight(true));
-                    }
+                        $(this).css('height', 'auto');
+                        var parent = $(slider);
 
-                    $(this).css('height', '100%');
-                });
+                        if($(this).outerHeight(true) > parent.height())
+                        {
+                            parent.height($(this).outerHeight(true));
+                        }
 
-                $(slider).trigger('slide-resize');
+                        $(this).css('height', '100%');
+                    });
+                }
+
+                // Only trigger slide resize if this event wasn't triggered by animation
+                if(params === undefined || !params.animation)
+                {
+                    $(slider).trigger('slide-resize');
+                }
             }
         });
 
