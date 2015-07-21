@@ -248,6 +248,13 @@
         slider.options = {display: 1, duration: 0.5, dynamicHeight: false};
         slider.options = $.extend(slider.options, input);
 
+        // Make sure there are enough panes to slide
+        if($(slider).find('.slide-pane').length <= slider.options.display)
+        {
+            $(slider).find('.slide-pane').removeClass('slide-pane');
+            return;
+        }
+
         init(slider);
         
         // When resize is triggered
